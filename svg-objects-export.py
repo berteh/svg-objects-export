@@ -56,6 +56,11 @@ examples:
  	exports all objects with an ID starting with 'export' from in.svg
  	to PNG files in the current directory.
 
+  %(prog)s --pattern '^(obj1|obj4)$' --prefix 'FILE_' in1.svg in2.svg
+ 	exports objects with IDs 'obj1' and 'obj4', from both in1 and in2 
+ 	files, to PNG files named in1_obj1.png, in1_obj4.png, in2_obj1.png 
+ 	and	in2_obj4.png.
+
   %(prog)s --silent --force --type eps --destdir vector/  ~/*.svg ~/tmp/*.svg
 	exports all objects with an ID that does not ressemble Inkscape
 	default IDs, from any SVG file in user's home and tmp directories,
@@ -73,12 +78,14 @@ parser.add_argument('-p', '--pattern', default=default_pattern,
 	help='pattern (regular expression) to identify which objects to export or exclude from export (depending on --exclude). Default pattern matches most ID generated automatically by Inkscape (in exclude mode).')	
 parser.add_argument('-e','--exclude', action='store_true', default=0,
 	help='use pattern to determine which objects to exclude from export, rather than include')
-parser.add_argument ('-d', '--destdir', default='./',
-	help='directory where images are exported to. Default is working directory')
+parser.add_argument ('-d', '--destdir', default='',
+	help='directory where images are exported to. Trailing slash is needed (backslash for windows), default is working directory.')
 parser.add_argument('-s','--silent', action='store_true', default=False,
 	help='do not print information to command line. Silent mode does not overwrite existing files by default, combine with --force if needed.')
 parser.add_argument('-f','--force', action='store_true', default=False,
-	help='do not prevent existing files from being overwritten')
+	help='overwrite existing files. Default is to warn and prompt user unless --silent is active.')
+parser.add_argument('-P','--prefix', default='',
+	help='prefix the generated file names with given PREFIX. "FILE" in the prefix is replaced with the svg file name.')
 parser.add_argument('-i', '--inkscape', default=inkscape_prog,#  metavar='path_to_inkscape',
 	help='path to inkscape command line executable')
 parser.add_argument('-t', '--type', default='png', choices=['png', 'ps', 'eps', 'pdf', 'plain-svg'],
@@ -148,20 +155,25 @@ def confirm(prompt=None, resp=False): # adapted from http://code.activestate.com
 
 
 ## process files
+prefix = args.prefix
 for infile in args.infiles:
 	message("exporting from ", infile)
+	if ('FILE' in args.prefix): #update prefix if needed		
+		prefix = args.prefix.replace('FILE',os.path.splitext(os.path.split(infile)[1])[0])
+		#message("  updated prefix to ", prefix, "  - infile is ", infile)
 	objects = subprocess.check_output([args.inkscape, "--query-all", infile])
 	for obj in objects.splitlines():
 		obj = obj.split(',')[0] #keep only ID
 		match = re.search(args.pattern, obj)
 		if ((args.exclude and (match == None)) or (not args.exclude and (match != None)) ):
-			destfile = ''.join([args.destdir, obj, '.', extension])
+			destfile = ''.join([args.destdir, prefix, obj, '.', extension])
 			export = args.force
 			if not args.force:
 				if (os.path.exists(destfile) and not args.silent): # silent does not overwrite, use -sf if needed.
 					export = confirm(prompt='File %s already exists, do you want to overwrite it?' % (destfile))
-			if export:
-				command = ''.join([args.inkscape, ' -i ', obj, ' --export-', args.type, ' ', destfile, ' ', args.extra, ' ', infile])			
-				run(command, shell=True)
+			if export:				
 				message('  ', obj, ' to ', destfile)
+				command = ''.join([args.inkscape, ' -i ', obj, ' --export-', args.type, ' ', destfile, ' ', args.extra, ' ', infile])			
+				#message(command)
+				run(command, shell=True)
 		
