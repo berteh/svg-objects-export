@@ -6,17 +6,19 @@ Export SVG elements to other formats (png, pdf, ps, eps, svg), selecting them  b
 
 usage
 -----
-*svg-objects-export.py* [-h] [-p PATTERN] [options] infiles
+svg-objects-export.py [-h] [-p PATTERN] [options] infiles
 
 
 arguments
 ---------
 
-positional arguments:
-    infiles               SVG file(s) to export objects from, wildcards are
-                        supported
+**positional arguments:**
 
-optional arguments:
+    infiles              SVG file(s) to export objects from, wildcards are
+                         supported
+
+**optional arguments:**
+
     -h, --help            show this help message and exit
     -p PATTERN, --pattern PATTERN
                           pattern (regular expression) to identify which objects
@@ -42,7 +44,7 @@ optional arguments:
 
 requirements
 ------------
-This program requires Inkscape 0.48%2B and Python 2.7%2B
+This program requires Inkscape 0.48+ and Python 2.7+
 
 default behaviour
 -----------------
@@ -50,30 +52,34 @@ The program exports by default all objects with an ID that has not
 been generated automatically by Inkscape.
 
 If you provide a custom pattern (-p), then exclude (-e) is by default
-turned off.
+turned off, that is: your custom pattern is used to define wich objects
+are *included* unless you specify -e.
 
 examples
 --------
     svg-objects-export.py --pattern '^export' in.svg
-      exports all objects with an ID starting with 'export' from in.svg
-      to PNG files in the current directory.
+
+exports all objects with an ID starting with 'export' from in.svg
+to PNG files in the current directory.
 
     svg-objects-export.py --silent --force --type eps --destdir vector/  ~/*.svg ~/tmp/*.svg
-      exports all objects with an ID that does not ressemble Inkscape
-      default IDs, from any SVG file in user's home and tmp directories,
-      to ./vector/ directory as EPS files, with no information displayed and
-      overwritting existing files
+
+exports all objects with an ID that does not ressemble Inkscape
+default IDs, from any SVG file in user's home and tmp directories,
+to ./vector/ directory as EPS files, with no information displayed and
+overwritting existing files
 
     svg-objects-export.py --exclude --pattern '[0-9]' --extra '--export-dpi 900' in.svg
-      exports all objects with an ID containing no digit, from in.svg file,
-      as PNG images with a resolution for rasterization of 900 dpi. As 
-      Inkscape uses 90 by default, this results in 10-times bigger images.  
+
+exports all objects with an ID containing no digit, from in.svg file,
+as PNG images with a resolution for rasterization of 900 dpi. As 
+Inkscape uses 90 by default, this results in 10-times bigger images.  
 
 license
 -------
-This software is release under the terms of FRESH-JUICE-WARE LICENSE
+This software is release under the terms of FRESH-JUICE-WARE LICENSE:
 
-(Berteh)[https://github.com/berteh/] wrote this file. You can do whatever 
+[Berteh](https://github.com/berteh/) wrote this file. You can do whatever 
 you want with this stuff. If we meet some day, and you think this stuff is worth 
 it, you can offer me a nice fresh juice.
 
