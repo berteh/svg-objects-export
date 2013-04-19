@@ -25,9 +25,9 @@ This script requires Inkscape (tested with 0.48)
  * distorted or destroyed in any manner whatsoever without further attribution or
  * notice to the creator. Constructive feedback is always welcome nevertheless.
 """
-import argparse
-import sys, os, subprocess
+import argparse, sys, os, subprocess, cmd
 import re
+
 
 #constants
 default_pattern = '^(rect|layer|path|use|g\d|svg|text|tspan)\d'
@@ -47,7 +47,8 @@ default behaviour:
 	been generated automatically by Inkscape.
 
 	If you provide a custom pattern (-p), then exclude (-e) is by default
-	turned off.
+	turned off, that is: your custom pattern is used to define wich objects
+	are *included* unless you specify -e.
 
 examples:
 
@@ -71,11 +72,11 @@ parser.add_argument('infiles', nargs='+',
 parser.add_argument('-p', '--pattern', default=default_pattern, 
 	help='pattern (regular expression) to identify which objects to export or exclude from export (depending on --exclude). Default pattern matches most ID generated automatically by Inkscape (in exclude mode).')	
 parser.add_argument('-e','--exclude', action='store_true', default=0,
-	help='use pattern to determine which objects to exclude from export, instead of include')
+	help='use pattern to determine which objects to exclude from export, rather than include')
 parser.add_argument ('-d', '--destdir', default='./',
-	help='directory where images are exported to. default is working directory')
+	help='directory where images are exported to. Default is working directory')
 parser.add_argument('-s','--silent', action='store_true', default=False,
-	help='do not print information to command line')
+	help='do not print information to command line. Silent mode does not overwrite existing files by default, combine with --force if needed.')
 parser.add_argument('-f','--force', action='store_true', default=False,
 	help='do not prevent existing files from being overwritten')
 parser.add_argument('-i', '--inkscape', default=inkscape_prog,#  metavar='path_to_inkscape',
@@ -111,10 +112,40 @@ if not os.path.exists(args.destdir):
 
 
 def message(*msg):
-	""" Utility "print" function that handles verbosity level of messages """
+	""" Utility "print" function that handles verbosity of messages
+	"""
 	if (not args.silent):
 		print ''.join(msg)
 	return
+
+def confirm(prompt=None, resp=False): # adapted from http://code.activestate.com/recipes/541096-prompt-the-user-for-confirmation/
+    """prompts for yes or no response from the user. Returns True for yes and
+    False for no.
+
+    'resp' should be set to the default value assumed by the caller when
+    user simply types ENTER.
+    """
+    
+    if prompt is None:
+        prompt = 'Confirm'
+
+    if resp:
+        prompt = '%s %s/%s: ' % (prompt, 'Y', 'n')
+    else:
+        prompt = '%s %s/%s: ' % (prompt, 'N', 'y')
+        
+    while True:
+        ans = raw_input(prompt)
+        if not ans:
+            return resp
+        if ans not in ['y', 'Y', 'n', 'N']:
+            print 'please enter y or n.'
+            continue
+        if ans == 'y' or ans == 'Y':
+            return True
+        if ans == 'n' or ans == 'N':
+            return False
+
 
 ## process files
 for infile in args.infiles:
@@ -125,7 +156,12 @@ for infile in args.infiles:
 		match = re.search(args.pattern, obj)
 		if ((args.exclude and (match == None)) or (not args.exclude and (match != None)) ):
 			destfile = ''.join([args.destdir, obj, '.', extension])
-			command = ''.join([args.inkscape, ' -i ', obj, ' --export-', args.type, ' ', destfile, ' ', args.extra, ' ', infile])			
-			run(command, shell=True)
-			message('  ', obj, ' to ', destfile)
+			export = args.force
+			if not args.force:
+				if (os.path.exists(destfile) and not args.silent): # silent does not overwrite, use -sf if needed.
+					export = confirm(prompt='File %s already exists, do you want to overwrite it?' % (destfile))
+			if export:
+				command = ''.join([args.inkscape, ' -i ', obj, ' --export-', args.type, ' ', destfile, ' ', args.extra, ' ', infile])			
+				run(command, shell=True)
+				message('  ', obj, ' to ', destfile)
 		
