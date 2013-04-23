@@ -3,6 +3,8 @@ svg-objects-export
 
 Export SVG elements to other formats (png, pdf, ps, eps, svg), selecting them  based on their ID with regular expressions.
 
+Useful for designing multiple icons in single file, sprite sheets, or multi-page documents with Inkscape (or other SVG editor). Easily generate low-resolution and high-resolution renders of some of the objects included in various SVG files... and more. 
+
 
 usage
 -----
@@ -83,7 +85,7 @@ and in2_obj4.png.
 
     svg-objects-export.py --silent --force --type eps --destdir vector/  ~/*.svg ~/tmp/*.svg
 
-exports all objects with an ID that does not ressemble Inkscape
+exports all objects with an ID that does not resemble Inkscape
 default IDs, from any SVG file in user's home and tmp directories,
 to vector/ directory as EPS files, with no information displayed and
 overwritting existing files
