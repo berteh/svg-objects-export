@@ -2,7 +2,7 @@
 """
 svg-objects-export
 
-@link https://gist.github.com/berteh/5416973/
+@link https://bitbucket.org/berteh/svg-objects-export
 
 Export SVG elements to other formats (png, pdf, ps, eps, svg), selecting them 
 based on their ID with regular expressions.
@@ -30,7 +30,7 @@ import re
 
 
 #constants
-default_pattern = '^(rect|layer|path|use|g\d|svg|text|tspan|outline)\d'
+default_pattern = '^(rect|layer|path|use|g\d|svg|text|tspan|outline|image)\d'
 if (sys.platform == 'win32'): inkscape_prog = 'C:\Progra~1\Inkscape\inkscape.com'
 else: inkscape_prog = 'inkscape'
 
