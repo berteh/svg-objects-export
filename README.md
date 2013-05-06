@@ -1,7 +1,7 @@
 svg-objects-export
 ==================
 
-Export SVG elements to other formats (png, pdf, ps, eps, svg), selecting them  based on their ID with regular expressions.
+Export multiple SVG elements to other formats (png, pdf, ps, eps, svg), selecting them based on their ID with regular expressions, or XPath expression.
 
 Useful for designing multiple icons in single file, sprite sheets, or multi-page documents with Inkscape (or other SVG editor). Easily generate low-resolution and high-resolution renders of some of the objects included in various SVG files... and more. 
 
@@ -27,8 +27,13 @@ arguments
                           to export or exclude from export (depending on
                           --exclude). Default pattern matches most ID generated
                           automatically by Inkscape (in exclude mode).
-    -e, --exclude         use pattern to determine which objects to exclude from
-                          export, rather than include
+    -x XPath EXPRESSION, --xpath XPath EXPRESSION
+                          XPath expression to identify which objects to export 
+                          or exclude from export (depending on --exclude). This
+                          option is not considered if a pattern is provided (see
+                          --patern).
+    -e, --exclude         use pattern or expression to determine which objects 
+                          to exclude from export, rather than include
     -d DESTDIR, --destdir DESTDIR
                           directory where images are exported to. Trailing slash
                           is needed (backslash for windows), default is working
@@ -48,9 +53,11 @@ arguments
                           export type (and suffix). png by default. See Inkscape
                           --help for supported formats (png, ps, eps, pdf,
                           plain-svg).
-    -x Inkscape_Export_Options, --extra Inkscape_Export_Options
+    -X Inkscape_Export_Options, --extra Inkscape_Export_Options
                           Extra options passed through (litterally) to inkscape
                           for export. See Inkscape --help for more.
+    -D, --debug           Generates (very) verbose output.
+
 
 
 
@@ -63,9 +70,9 @@ default behaviour
 The program exports by default all objects with an ID that has not
 been generated automatically by Inkscape.
 
-If you provide a custom pattern (-p), then exclude (-e) is by default
-turned off, that is: your custom pattern is used to define wich objects
-are *included* unless you specify -e.
+If you provide a custom pattern (-p) or xpath expression (-x), then exclude 
+(-e) is by default turned off, that is: your custom pattern or expression is
+used to define wich objects are *included* unless you specify -e.
 
 examples
 --------
@@ -74,6 +81,14 @@ examples
 
 exports all objects with an ID starting with 'export' from in.svg
 to PNG files in the current directory.
+
+
+     svg-objects-export.py --exclude --xpath '//svg:g | //svg:rect' in.svg
+
+exports all objects that are no SVG group or rectangle, from in.svg to 
+PNG files in current working directory. Namespaces available are: svg, 
+inkscape, sodipodi, xlink, re (for regular expressions). 
+See http://lxml.de for more on xpath in this program.
 
 
     svg-objects-export.py --pattern '^(obj1|obj4)$' --prefix 'FILE_' in1.svg in2.svg
@@ -96,6 +111,8 @@ overwritting existing files
 exports all objects with an ID containing no digit, from in.svg file,
 as PNG images with a resolution for rasterization of 900 dpi. As 
 Inkscape uses 90 by default, this results in 10-times bigger images.
+
+Additional examples: https://github.com/berteh/svg-objects-export/wiki
 
 
 license
