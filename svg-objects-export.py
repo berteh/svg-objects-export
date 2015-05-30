@@ -30,7 +30,7 @@ import re, lxml
 
 
 #constants (feel free to change these to your favorite defaults)
-default_pattern = '^(rect|layer|path|use|g\d|svg|text|tspan|outline|image)\d'
+default_pattern = '^(rect|layer|path|use|g\d|svg|text|tspan|outline|image|circle|ellipse)\d'
 if (sys.platform == 'win32'): inkscape_prog = 'C:\Progra~1\Inkscape\inkscape.com'
 else: inkscape_prog = 'inkscape'
 xpath_namespaces = {'svg':"http://www.w3.org/2000/svg",	\
