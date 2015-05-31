@@ -191,7 +191,7 @@ try:
 	run([args.inkscape, "-V"])	
 except Exception:
 	print  '''Could not find inkscape command line executable, set --inkscape option accordingly.
-It is usually /usr/bin/inkscape in linux and C:\Progra~1\Inkscape\inkscape.com in windows.'''
+It is usually /usr/bin/inkscape in linux, C:\Progra~1\Inkscape\inkscape.com in windows, and /Applications/Inkscape.app/Contents/Resources/bin/inkscape in Mac.'''
 	sys.exit(2);
 # set 'include' mode by default for custom pattern or xpath
 if (args.exclude == 0):
