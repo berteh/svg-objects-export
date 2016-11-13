@@ -176,7 +176,7 @@ def exportObject(obj,args,prefix,extension,infile):
 			export = confirm(prompt='File %s already exists, do you want to overwrite it?' % (destfile))				
 	if export:				
 		message('  '+obj+' to '+destfile)
-		command = args.inkscape+' -i '+obj+' --export-'+args.type+' '+destfile+' '+args.extra+' '+infile
+		command = args.inkscape+' -i "'+obj+'" --export-'+args.type+' "'+destfile+'" '+args.extra+' '+infile
 		debug("runnning "+command)
 		run(command, shell=True)
 
