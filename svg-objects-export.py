@@ -176,7 +176,7 @@ def exportObject(obj,args,prefix,extension,infile):
 			export = confirm(prompt='File %s already exists, do you want to overwrite it?' % (destfile))				
 	if export:				
 		message('  '+obj+' to '+destfile)
-		command = args.inkscape+' -i "'+obj+'" --export-'+args.type+' "'+destfile+'" '+args.extra+' '+infile
+		command = args.inkscape+' -i "'+obj+'" --export-'+args.type+' "'+destfile+'" '+args.extra+' "'+infile+'" '
 		debug("runnning "+command)
 		run(command, shell=True)
 
@@ -197,7 +197,7 @@ It is usually /usr/bin/inkscape in linux, C:\Progra~1\Inkscape\inkscape.com in w
 if (args.exclude == 0):
 	args.exclude = (args.pattern is default_pattern) and (args.xpath is '')
 # fix 'plain-svg' extension
-if (args.type == 'plain-svg'): extension = '.plain-svg.svg'
+if (args.type == 'plain-svg'): extension = 'plain-svg.svg'
 else: extension = args.type
 # create destdir if needed
 if not os.path.exists(args.destdir):
