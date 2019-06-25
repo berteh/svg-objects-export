@@ -154,7 +154,7 @@ def confirm(prompt=None, resp=False): # adapted from http://code.activestate.com
         prompt = '%s %s/%s: ' % (prompt, 'N', 'y')
         
     while True:
-        ans = raw_input(prompt)
+        ans = input(prompt)
         if not ans:
             return resp
         if ans not in ['y', 'Y', 'n', 'N']:
@@ -226,7 +226,7 @@ for infile in args.infiles:
 		objects_all = subprocess.check_output([args.inkscape, "--query-all", infile])	
 		#message(objects)
 		for obj in objects_all.splitlines():
-			obj = obj.split(',')[0] #keep only ID:
+			obj = obj.split(b',')[0].decode('utf-8') #keep only ID:
 			match = re.search(args.pattern, obj)
 			#debug("object ",obj,ife(match, " matches"," does not match"))
 			if ((args.exclude and (match == None)) or (not args.exclude and (match != None)) ):
