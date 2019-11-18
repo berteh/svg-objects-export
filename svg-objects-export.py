@@ -4,24 +4,24 @@ svg-objects-export
 
 @link https://github.com/berteh/svg-objects-export
 
-Export multiple SVG elements to other formats (png, pdf, ps, eps, svg), selecting them 
+Export multiple SVG elements to other formats (png, pdf, ps, eps, svg), selecting them
 based on their ID with regular expressions, or XPath expression.
 
-Useful for designing multiple icons in single file, sprite sheets, or multi-page 
-documents with Inkscape (or another SVG editor). Easily generate low-resolution 
+Useful for designing multiple icons in single file, sprite sheets, or multi-page
+documents with Inkscape (or another SVG editor). Easily generate low-resolution
 and high-resolution renders of some of the objects included in various SVG files
-... and more. 
+... and more.
 
 This script requires Inkscape (tested with 0.48)
 
  * This software is release under the terms of FRESH-JUICE-WARE LICENSE
  *
- * Berteh <https://gist.github.com/berteh/> wrote this file. You can do whatever 
- * you want with this stuff. If we meet some day, and you think this stuff is worth 
+ * Berteh <https://gist.github.com/berteh/> wrote this file. You can do whatever
+ * you want with this stuff. If we meet some day, and you think this stuff is worth
  * it, you can offer me a nice fresh juice.
  *
  * The author of this work hereby waives all claim of copyright (economic and moral)
- * in this work and immediately places it in the public domain; it may be used, 
+ * in this work and immediately places it in the public domain; it may be used,
  * distorted or destroyed in any manner whatsoever without further attribution or
  * notice to the creator. Constructive feedback is always welcome nevertheless.
 """
@@ -43,7 +43,7 @@ xpath_namespaces = {'svg':"http://www.w3.org/2000/svg",	\
 #parse options
 parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
 	description='''Exports multiple objects from an SVG file to various formats
-(PNG, SVG, PS, EPS, PDF).''', 	
+(PNG, SVG, PS, EPS, PDF).''',
 	usage="%(prog)s [-h] [-p PATTERN] [options] infiles+",
 	epilog='''requirements
 	This program requires Inkscape 0.48+ and Python 2.7+
@@ -52,7 +52,7 @@ default behaviour:
 	The program exports by default all objects with an ID that has not
 	been generated automatically by Inkscape.
 
-	If you provide a custom pattern (-p) or xpath expression (-x), then exclude 
+	If you provide a custom pattern (-p) or xpath expression (-x), then exclude
 	(-e) is by default turned off, that is: your custom pattern or expression is
 	used to define wich objects	are *included* unless you specify -e.
 
@@ -63,14 +63,14 @@ examples:
  	to PNG files in the current directory.
 
   %(prog)s --exclude --xpath '//svg:g | //svg:rect' in.svg
-  	exports all objects that are no SVG group or rectangle, from in.svg to 
-  	PNG files in current working directory. Namespaces available are: svg, 
-  	inkscape, sodipodi, xlink, re (for regular expressions). 
+  	exports all objects that are no SVG group or rectangle, from in.svg to
+  	PNG files in current working directory. Namespaces available are: svg,
+  	inkscape, sodipodi, xlink, re (for regular expressions).
   	See http://lxml.de for more on xpath in this program.
 
   %(prog)s --pattern '^(obj1|obj4)$' --prefix 'FILE_' in1.svg in2.svg
- 	exports objects with IDs 'obj1' and 'obj4', from both in1 and in2 
- 	files, to PNG files named in1_obj1.png, in1_obj4.png, in2_obj1.png 
+ 	exports objects with IDs 'obj1' and 'obj4', from both in1 and in2
+ 	files, to PNG files named in1_obj1.png, in1_obj4.png, in2_obj1.png
  	and	in2_obj4.png.
 
   %(prog)s --silent --force --type eps --destdir vector/  ~/*.svg ~/tmp/*.svg
@@ -81,7 +81,7 @@ examples:
 
   %(prog)s --exclude --pattern '[0-9]' --extra '--export-dpi 900' in.svg
 	exports all objects with an ID containing no digit, from in.svg file,
-	as PNG images with a resolution for	rasterization of 900 dpi. As 
+	as PNG images with a resolution for	rasterization of 900 dpi. As
 	Inkscape uses 90 by default, this results in 10-times bigger images.
 
 
@@ -90,12 +90,12 @@ Additional examples: https://github.com/berteh/svg-objects-export/wiki
 
 
 ''')
-parser.add_argument('infiles', nargs='+', 
+parser.add_argument('infiles', nargs='+',
 	help='SVG file(s) to export objects from, wildcards are supported')
-parser.add_argument('-p', '--pattern', default=default_pattern, 
-	help='pattern (regular expression) to identify which objects to export or exclude from export (depending on --exclude). Default pattern matches most ID generated automatically by Inkscape (in exclude mode).')	
+parser.add_argument('-p', '--pattern', default=default_pattern,
+	help='pattern (regular expression) to identify which objects to export or exclude from export (depending on --exclude). Default pattern matches most ID generated automatically by Inkscape (in exclude mode).')
 parser.add_argument('-x', '--xpath', default='', metavar='XPath EXPRESSION',
-	help='XPath expression to identify which objects to export or exclude from export (depending on --exclude). This option is not considered if a pattern is provided (see --patern).')	
+	help='XPath expression to identify which objects to export or exclude from export (depending on --exclude). This option is not considered if a pattern is provided (see --patern).')
 parser.add_argument('-e','--exclude', action='store_true', default=0,
 	help='use pattern or expression to determine which objects to exclude from export, rather than include')
 parser.add_argument ('-d', '--destdir', default='.',
@@ -144,7 +144,7 @@ def confirm(prompt=None, resp=False): # adapted from http://code.activestate.com
     'resp' should be set to the default value assumed by the caller when
     user simply types ENTER.
     """
-    
+
     if prompt is None:
         prompt = 'Confirm'
 
@@ -152,7 +152,7 @@ def confirm(prompt=None, resp=False): # adapted from http://code.activestate.com
         prompt = '%s %s/%s: ' % (prompt, 'Y', 'n')
     else:
         prompt = '%s %s/%s: ' % (prompt, 'N', 'y')
-        
+
     while True:
         ans = raw_input(prompt)
         if not ans:
@@ -173,10 +173,11 @@ def exportObject(obj,args,prefix,extension,infile):
 		if (not os.path.exists(destfile)):
 			export = True
 		elif not args.silent: # silent does not overwrite, use -sf if needed.
-			export = confirm(prompt='File %s already exists, do you want to overwrite it?' % (destfile))				
-	if export:				
+			export = confirm(prompt='File %s already exists, do you want to overwrite it?' % (destfile))
+	if export:
 		message('  '+obj+' to '+destfile)
-		command = args.inkscape+' -i "'+obj+'" --export-'+args.type+' "'+destfile+'" '+args.extra+' "'+infile+'" '
+		#args.inkscape+' -i "'+obj+'" --export-'+args.type+' "'+destfile+'" '+args.extra+' "'+infile+'" '
+		command = args.inkscape+' -i "'+obj+'" --export-type='+args.type+' "'+destfile+'" '+args.extra+' "'+infile+'" '
 		debug("runnning "+command)
 		run(command, shell=True)
 
@@ -188,7 +189,7 @@ else:
 	run = subprocess.check_call
 # verify inkscape path
 try:
-	run([args.inkscape, "-V"])	
+	run([args.inkscape, "-V"])
 except Exception:
 	print  '''Could not find inkscape command line executable, set --inkscape option accordingly.
 It is usually /usr/bin/inkscape in linux, C:\Progra~1\Inkscape\inkscape.com in windows, and /Applications/Inkscape.app/Contents/Resources/bin/inkscape in Mac.'''
@@ -217,20 +218,20 @@ debug("arguments: ", args)
 prefix = args.prefix
 
 for infile in args.infiles:
-	if ('FILE' in args.prefix): #update prefix if needed		
+	if ('FILE' in args.prefix): #update prefix if needed
 		prefix = args.prefix.replace('FILE',os.path.splitext(os.path.split(infile)[1])[0])
-		#debug("  updated prefix to ", prefix, "  - infile is ", infile)	
+		#debug("  updated prefix to ", prefix, "  - infile is ", infile)
 	if (regexp_mode):
 		#import re
 		message("exporting from "+infile+" all objects "+ife(args.exclude,'not ','')+"matching "+args.pattern)
-		objects_all = subprocess.check_output([args.inkscape, "--query-all", infile])	
+		objects_all = subprocess.check_output([args.inkscape, "--query-all", infile])
 		#message(objects)
 		for obj in objects_all.splitlines():
 			obj = obj.split(',')[0] #keep only ID:
 			match = re.search(args.pattern, obj)
 			#debug("object ",obj,ife(match, " matches"," does not match"))
 			if ((args.exclude and (match == None)) or (not args.exclude and (match != None)) ):
-				exportObject(obj,args,prefix,extension,infile)				
+				exportObject(obj,args,prefix,extension,infile)
 	elif (xpath_mode):
 		from lxml import etree
 		message("exporting from "+infile+" all objects "+ife(args.exclude,'not ','')+"matching "+args.xpath)
@@ -238,7 +239,7 @@ for infile in args.infiles:
 		intree = etree.parse(infile, parser)
 		if (len(parser.error_log) > 0):
 			message ("Could not parse ",infile,":")
-			debug(error_log)		
+			debug(error_log)
 		find = etree.XPath("("+args.xpath+")/@id", namespaces=xpath_namespaces) #find the ids, not the objects
 		objects = find(intree)
 		message("found %i objects matching XPath" % len(objects))
@@ -246,10 +247,10 @@ for infile in args.infiles:
 			for obj in objects:
 				exportObject(obj,args,prefix,extension,infile)
 		else: #exclude mode
-			objects_all = subprocess.check_output([args.inkscape, "--query-all", infile])	
+			objects_all = subprocess.check_output([args.inkscape, "--query-all", infile])
 			#message(objects)
 			for obj in objects_all.splitlines():
 				obj = obj.split(',')[0] #keep only ID:
 				if not(obj in objects):
 					exportObject(obj,args,prefix,extension,infile)
-		
+
