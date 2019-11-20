@@ -121,13 +121,13 @@ def message(*msg):
 	""" Utility "print" function that handles verbosity of messages
 	"""
 	if (not args.silent  or args.debug):
-		print ''.join(msg)
+		print(''.join(msg))
 	return
 def debug(*msg):
 	""" Utility "print" function that handles verbosity of messages
 	"""
 	if (args.debug):
-		print msg
+		print(msg)
 	return
 def ife(test, if_result, else_result):
 	if(test):
@@ -135,7 +135,7 @@ def ife(test, if_result, else_result):
 	return else_result
 
 def printif(*args):
-	print ife(args)
+	print(ife(args))
 
 def confirm(prompt=None, resp=False): # adapted from http://code.activestate.com/recipes/541096-prompt-the-user-for-confirmation/
     """prompts for yes or no response from the user. Returns True for yes and
@@ -154,11 +154,11 @@ def confirm(prompt=None, resp=False): # adapted from http://code.activestate.com
         prompt = '%s %s/%s: ' % (prompt, 'N', 'y')
         
     while True:
-        ans = raw_input(prompt)
+        ans = input(prompt)
         if not ans:
             return resp
         if ans not in ['y', 'Y', 'n', 'N']:
-            print 'please enter y or n.'
+            print('please enter y or n.')
             continue
         if ans == 'y' or ans == 'Y':
             return True
@@ -190,8 +190,8 @@ else:
 try:
 	run([args.inkscape, "-V"])	
 except Exception:
-	print  '''Could not find inkscape command line executable, set --inkscape option accordingly.
-It is usually /usr/bin/inkscape in linux, C:\Progra~1\Inkscape\inkscape.com in windows, and /Applications/Inkscape.app/Contents/Resources/bin/inkscape in Mac.'''
+	print('''Could not find inkscape command line executable, set --inkscape option accordingly.
+It is usually /usr/bin/inkscape in linux, C:\Progra~1\Inkscape\inkscape.com in windows, and /Applications/Inkscape.app/Contents/Resources/bin/inkscape in Mac.''')
 	sys.exit(2);
 # set 'include' mode by default for custom pattern or xpath
 if (args.exclude == 0):
@@ -226,7 +226,7 @@ for infile in args.infiles:
 		objects_all = subprocess.check_output([args.inkscape, "--query-all", infile])	
 		#message(objects)
 		for obj in objects_all.splitlines():
-			obj = obj.split(',')[0] #keep only ID:
+			obj = obj.split(b',')[0].decode('utf-8') #keep only ID:
 			match = re.search(args.pattern, obj)
 			#debug("object ",obj,ife(match, " matches"," does not match"))
 			if ((args.exclude and (match == None)) or (not args.exclude and (match != None)) ):
