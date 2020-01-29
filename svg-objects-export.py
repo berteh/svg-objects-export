@@ -176,7 +176,7 @@ def exportObject(obj,args,prefix,extension,infile):
 			export = confirm(prompt='File %s already exists, do you want to overwrite it?' % (destfile))
 	if export:
 		# Check which Inkscape version we are using. v0.48 - v0.9x has options deprecated in v1.x
-		inkscape_version_output = subprocess.check_output([args.inkscape, '--version'])
+		inkscape_version_output = str(subprocess.check_output([args.inkscape, '--version']))
 		inkscape_v1_or_greater = re.search('Inkscape [1-9]\.\d', inkscape_version_output)
 		debug("Inkscape Version Output: "+inkscape_version_output)
 		message('  '+obj+' to '+destfile)
