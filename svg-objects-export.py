@@ -186,7 +186,7 @@ def exportObject(obj,args,prefix,extension,infile):
 			if args.type == 'plain-svg':
 				args.type = 'svg'
 			command = args.inkscape+' -i "'+obj+'" --export-type='+args.type+' "'+destfile+'" '+args.extra+' "'+infile+'" '
-		debug("runnning "+command)
+		debug("runnning: "+command)
 		run(command, shell=True)
 
 ## handle arguments
