@@ -180,12 +180,12 @@ def exportObject(obj,args,prefix,extension,infile):
 		inkscape_v1_or_greater = re.search('Inkscape [1-9]\.\d', inkscape_version_output)
 		debug("Inkscape Version Output: "+inkscape_version_output)
 		message('  '+obj+' to '+destfile)
-		command = args.inkscape+' -i "'+obj+'" --export-'+args.type+' "'+destfile+'" '+args.extra+' "'+infile+'" '
+		command = args.inkscape+' -i "'+obj+'" --export-'+args.type+' -o "'+destfile+'" '+args.extra+' "'+infile+'" '
 		# If we're running v1, our command needs to be updated to the latest and greatest syntax.
 		if inkscape_v1_or_greater:
 			if args.type == 'plain-svg':
 				args.type = 'svg'
-			command = args.inkscape+' -i "'+obj+'" --export-type='+args.type+' "'+destfile+'" '+args.extra+' "'+infile+'" '
+			command = args.inkscape+' -i "'+obj+'" --export-type='+args.type+' -o "'+destfile+'" '+args.extra+' "'+infile+'" '
 		debug("runnning: "+command)
 		run(command, shell=True)
 
