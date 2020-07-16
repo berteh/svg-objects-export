@@ -204,7 +204,7 @@ It is usually /usr/bin/inkscape in linux, C:\Progra~1\Inkscape\inkscape.com in w
 	sys.exit(2);
 # set 'include' mode by default for custom pattern or xpath
 if (args.exclude == 0):
-	args.exclude = (args.pattern is default_pattern) and (args.xpath is '')
+	args.exclude = (args.pattern is default_pattern) and (args.xpath == '')
 # fix 'plain-svg' extension
 if (args.type == 'plain-svg'): extension = 'plain-svg.svg'
 else: extension = args.type
@@ -212,10 +212,10 @@ else: extension = args.type
 if not os.path.exists(args.destdir):
 	message('creating directory: '+args.destdir)
 	os.makedirs(args.destdir)
-elif args.destdir is '.':
+elif args.destdir == '.':
 	args.destdir = '' #remove dot for current directory to ease the definition of destfile
 #check for xpath
-xpath_mode = (args.pattern is default_pattern) and not (args.xpath is '')
+xpath_mode = (args.pattern is default_pattern) and (args.xpath != '')
 regexp_mode = not xpath_mode
 #done with arguments processing
 debug("arguments: ", args)
